@@ -96,11 +96,8 @@ const episode = (
 const person = (title, movies, shows = [], id = idCounter++) => {
     const person = { itemType: "Person", id, title, movies: [], shows: [] };
     addEntry(persons, person);
-    movies.forEach(movie => {
-        addLink(person, "movies", movie, "cast");
-    });
-    shows.forEach(movie => {
-        addLink(person, "shows", movie, "cast");
+    [...movies, ...shows].forEach(item => {
+        addLink(person, "actedIn", item, "cast");
     });
     return person;
 };
@@ -175,8 +172,13 @@ episode("Open Wide, O Earth", 1, 3, 9.6, chernobyl);
 episode("The Happiness of All Mankind", 1, 4, 9.5, chernobyl);
 episode("Vichnaya Pamyat", 1, 5, 9.9, chernobyl);
 
+episode("The Iron Throne", 8, 6, 4.1, gameOfThrones);
+episode("The Bells", 8, 5, 6.0, gameOfThrones);
+episode("The Last of the Starks", 8, 4, 7.6, gameOfThrones);
+episode("The Long Night", 8, 3, 7.5, gameOfThrones);
+episode("A Night of the Seven Kingdoms", 8, 2, 7.9, gameOfThrones);
 episode("Winterfell", 8, 1, 7.6, gameOfThrones);
-episode("The Last of the Starks", 8, 1, 7.6, gameOfThrones);
+
 episode("The Rains of Castamere", 3, 9, 9.9, gameOfThrones);
 episode("Hardhome", 5, 8, 9.9, gameOfThrones);
 episode("The Winds of Winter", 6, 10, 9.9, gameOfThrones);
@@ -221,11 +223,11 @@ person(
     ],
     [theBoys, spaced]
 );
+person("Nick Frost", [shaunOfTheDead, hotFuzz], [spaced]);
 person("Rebecca Ferguson", [
     missionImpossibleRogueNation,
     missionImpossibleFallout
 ]);
-person("Rory McCann", [hotFuzz], [gameOfThrones]);
 person("Emilia Clarke", [], [gameOfThrones]);
 person("Peter Dinklage", [], [gameOfThrones]);
 person("Lena Headey", [], [gameOfThrones]);
@@ -233,3 +235,4 @@ person("Kit Harington", [], [gameOfThrones]);
 person("Sophie Turner", [], [gameOfThrones]);
 person("Maisie Williams", [], [gameOfThrones]);
 person("Nikolaj Coster-Waldau", [], [gameOfThrones]);
+person("Rory McCann", [hotFuzz], [gameOfThrones]);

@@ -1,13 +1,15 @@
 type Query {
-    search(query: String!, sortBy: SortBy, limit: Int): [SearchResult]
-    getCategory(query: String!): Category
-    getMovie(query: String!): Movie
-    getPerson(query: String!): Person
+    search(query: String, sortBy: SortBy, limit: Int): [SearchResult]
+    getCategories(query: String, limit: Int): [Category]
+    getMovies(query: String, sortBy: SortBy, limit: Int): [Movie]
+    getShows(query: String, sortBy: SortBy, limit: Int): [Show]
+    getPersons(query: String, sortBy: SortBy, limit: Int): [Person]
 }
+
 
 type Category {
     title: String
-    items(sortBy: SortBy, limit: Int): [CategorizedItem]
+    items(query: String, sortBy: SortBy, limit: Int): [ItemWithCategory]
 }
 
 type Movie {
@@ -16,17 +18,16 @@ type Movie {
     rating: Float
     year: String
     categories: [Category]
-    cast(limit: Int): [Person]
+    cast(query: String, limit: Int): [Person]
 }
 
 type Show {
     title: String
-    poster: String
     rating: Float
     year: String
-    episodes(sortBy: SortBy, limit: Int): [Episode]
+    episodes(query: String, sortBy: SortBy, limit: Int): [Episode]
     categories: [Category]
-	cast(limit: Int): [Person]
+	cast(query: String, limit: Int): [Person]
 }
 
 type Episode {
@@ -39,13 +40,15 @@ type Episode {
 
 type Person {
     name: String
-    movies(sortBy: SortBy, limit: Int): [Movie]
+    actedIn(query: String, sortBy: SortBy, limit: Int): [ItemWithCast]
 }
 
-union CategorizedItem = Movie | Show
+union ItemWithCast = Movie | Show
+union ItemWithCategory = Movie | Show
 union SearchResult = Category | Movie | Show | Episode | Person
 
 enum SortBy {
     RATING
+	YEAR
     NONE
 }

@@ -2,34 +2,36 @@ const axios = require("axios");
 
 const { movies, shows, episodes, categories, persons } = require("./dataset");
 
+const resolveItemType = {
+    __resolveType: item => item.itemType
+};
+
 const resolvers = {
     Query: {
         search: searchResolver,
-        getMovie: getItemResolver(movies),
-        getCategory: getItemResolver(categories),
-        getPerson: getItemResolver(persons)
+        getMovies: itemsResolver(movies),
+        getShows: itemsResolver(shows),
+        getCategories: itemsResolver(categories),
+        getPersons: itemsResolver(persons)
     },
     Category: {
         items: itemsResolver("items")
     },
     Movie: {
-        poster: posterResolver,
-		cast: itemsResolver("cast"),
+		poster: posterResolver,
+        cast: itemsResolver("cast")
     },
     Show: {
-		episodes: itemsResolver("episodes"),
-		cast: itemsResolver("cast"),
+        episodes: itemsResolver("episodes"),
+        cast: itemsResolver("cast")
     },
     Person: {
         name: item => item.title,
-        movies: itemsResolver("movies")
+        actedIn: itemsResolver("actedIn")
     },
-    CategorizedItem: {
-        __resolveType: item => item.itemType
-    },
-    SearchResult: {
-        __resolveType: item => item.itemType
-    }
+    SearchResult: resolveItemType,
+    ItemWithCast: resolveItemType,
+    ItemWithCategory: resolveItemType
 };
 
 module.exports = {
@@ -47,11 +49,6 @@ function searchResolver(_, { query, sortBy, limit }) {
     const sortedItems = sortItems(searchedItems, sortBy);
     return limitItems(sortedItems, limit);
 }
-
-function getItemResolver(list) {
-    return (_, { query }) => searchList(list, query)[0];
-}
-
 
 function itemsResolver(listOrKey) {
     const getItems = (listOrKey, item) => {
@@ -73,6 +70,8 @@ function itemsResolver(listOrKey) {
 function sortItems(items, sortBy) {
     if (sortBy === "RATING") {
         return items.slice().sort((a, b) => b.rating - a.rating);
+	} else if (sortBy === "YEAR") {
+        return items.slice().sort((a, b) => b.year - a.year);
     } else return items;
 }
 
